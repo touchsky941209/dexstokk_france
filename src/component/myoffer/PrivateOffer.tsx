@@ -10,6 +10,8 @@ import TableRow from '@mui/material/TableRow';
 import { useNavigate } from 'react-router-dom';
 import useWeb3 from '../../hooks/useWeb3';
 import { getOfficialYield, getOfficialPrice, isSearchFilter } from '../functions/tokensContract';
+import toastr from 'toastr';
+import Dialog from '@mui/material/Dialog';
 
 interface Column {
   id: 'offerid' | 'offertoken' | 'buyertoken' | 'officialyield' | 'offeryield' | 'yielddelta' | 'officialprice' | 'pricetoken' | 'pricedelta' | 'availablequantity';
@@ -30,7 +32,6 @@ const columns: readonly Column[] = [
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
   },
-
   {
     id: 'buyertoken', label: 'Buyer\u00a0Token', minWidth: 80,
     align: 'center',
@@ -43,7 +44,6 @@ const columns: readonly Column[] = [
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US') + " %",
   },
-
   {
     id: 'offeryield',
     label: 'Offer Yield',
@@ -51,7 +51,6 @@ const columns: readonly Column[] = [
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US') + " %",
   },
-
   {
     id: 'yielddelta',
     label: 'Yield Delta',
@@ -114,21 +113,20 @@ function createData(
   pricedelta: number,
   availablequantity: number,
 ): Data {
-  // const density = population / size;
   return { offerid, offertoken, buyertoken, officialyield, offeryield, yielddelta, officialprice, pricetoken, pricedelta, availablequantity };
 }
 
 
 
 export default function StickyHeadTable(props: any) {
-  const { account, tokens, properties } = useWeb3()
+  const { account, tokens, properties, estokkYamContract } = useWeb3()
   const [rows, setRows] = React.useState([
     createData(1, 'Offer1', 'Buyer1', 15.4, 13, 10, 11, 12, 9, 11),
   ])
   const navigate = useNavigate()
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
+  const [sellerAddress, setSellerAddress] = React.useState([])
   const gotoShowOffer = (index: any) => {
     navigate('/showoffer', { state: { index } });
   }
@@ -143,30 +141,76 @@ export default function StickyHeadTable(props: any) {
   };
 
   React.useEffect(() => {
-    const offerArray: any = []
-    const offers = props.content
+    const init = async () => {
+      const offerArray: any = []
+      const offerSellerAddress: any = []
+      const offers = props.content
 
-    offers.map((item: any, index: any) => {
-      const _offerTokenAddres: any = item.offerTokenAddress
-      const _buyerTokenAddres: any = item.buyerTokenAddress
-      const _offerId: any = item.offerId
-      const _officialYield: any = getOfficialYield(_offerTokenAddres, _buyerTokenAddres, tokens, properties)
-      const _officialprice: any = getOfficialPrice(_offerTokenAddres, _buyerTokenAddres, tokens, properties)
-      const _priceToken: any = Number(item.price)
-      const _offerYield: any = _officialYield * _officialprice / _priceToken
-      const _yeidlDelta: any = (_offerYield - _officialYield) * 100 / _officialYield
-      const _priceDelta: any = (_priceToken - _officialprice) / _officialprice
-      const _availableQuantity: any = Number(item.amount) / Math.pow(10, 18)
-      if (item.buyer === account) {
-        if (isSearchFilter(_offerTokenAddres, _buyerTokenAddres, props.searchType, tokens))
-          offerArray.push(createData(_offerId, item.offerToken, item.buyerToken, _officialYield, _offerYield, _yeidlDelta, _officialprice, _priceToken, _priceDelta, _availableQuantity))
-      }
-    })
+      await Promise.all(
+        offers.map(async (item: any, index: any) => {
 
-    setRows(offerArray)
+          const _offerTokenAddres: any = item.offerTokenAddress
+          const _buyerTokenAddres: any = item.buyerTokenAddress
+          const _offerId: any = item.offerId
+          const _officialYield: any = getOfficialYield(_offerTokenAddres, _buyerTokenAddres, tokens, properties)
+          const _officialprice: any = getOfficialPrice(_offerTokenAddres, _buyerTokenAddres, tokens, properties)
+          const _priceToken: any = Number(item.price)
+          const _offerYield: any = _officialYield * _officialprice / _priceToken
+          const _yeidlDelta: any = (_offerYield - _officialYield) * 100 / _officialYield
+          const _priceDelta: any = (_priceToken - _officialprice) / _officialprice
+          const _availableQuantity: any = Number(item.amount) / Math.pow(10, 18)
+
+          const offer = await estokkYamContract.methods.showOffer(_offerId).call()
+
+          if (item.buyer === account) {
+            if (isSearchFilter(_offerTokenAddres, _buyerTokenAddres, props.searchType, tokens)) {
+              offerArray.push(createData(_offerId, item.offerToken, item.buyerToken, _officialYield, _offerYield, _yeidlDelta, _officialprice, _priceToken, _priceDelta, _availableQuantity))
+              offerSellerAddress.push(offer[2])
+            }
+          }
+
+        })
+      )
+
+      setSellerAddress(offerSellerAddress)
+
+      setRows(offerArray)
+    }
+
+    init()
 
   }, [props])
 
+  React.useEffect(() => {
+    console.log("Seller Address => ", sellerAddress)
+  }, [sellerAddress])
+
+  const OfferEdit = async (offerId: any) => {
+    try {
+      const offer = await estokkYamContract.methods.showOffer(offerId).call()
+      const offerAddress = offer[2]
+      if (offerAddress !== account) {
+        toastr.info("You are not offer creater.")
+        return
+      }
+
+    } catch (err) {
+
+    }
+  }
+
+  const OfferDelete = async (offerId: any) => {
+    try {
+      const offer = await estokkYamContract.methods.showOffer(offerId).call()
+      const offerAddress = offer[2]
+      if (offerAddress !== account) {
+        toastr.info("You are not offer creater.")
+        return
+      }
+      await estokkYamContract.methods.deleteOffer(offerId).send({ from: account })
+    } catch (err) {
+    }
+  }
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <TableContainer sx={{ maxHeight: 440, minHeight: 300 }}>
@@ -202,6 +246,23 @@ export default function StickyHeadTable(props: any) {
                         </TableCell>
                       );
                     })}
+                    <TableCell>
+                      <button className='w-[20px]'
+                        onClick={() => { OfferEdit(row.offerid) }}
+                      >
+                        <img src='./img/contractEdit.png' width="42" height="42" alt='contractEdit'></img>
+                      </button>
+                    </TableCell>
+
+                    <TableCell>
+                      {/* sellerAddress[index] === account && */}
+                      <button className='w-[20px]'
+                        onClick={() => { OfferDelete(row.offerid) }}
+                      >
+                        <img src='./img/contractDelete.png' width="42" height="42" alt='contractEdit'></img>
+                      </button>
+
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -217,6 +278,10 @@ export default function StickyHeadTable(props: any) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    </Paper>
+    </Paper >
   );
 }
+
+
+
+

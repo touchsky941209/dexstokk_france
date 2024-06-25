@@ -4,6 +4,7 @@ import { convertToObject } from 'typescript';
 
 export const defaultContractAddress = "0x0000000000000000000000000000000000000000"
 
+
 export const getTokenBalance = async (tokenAddress: any, account: any) => {
     const web3 = new Web3(window.ethereum);
     const tokenContract = new web3.eth.Contract(TokenContractAbi, tokenAddress);
@@ -178,6 +179,10 @@ export const getTokenRealEstakeInfoFromMarketPlace = (_offerTokenAddress: any, _
 
 export const isSearchFilter = (_offerTokenAddress: any, _buyerTokenAddress: any, searchType: any, tokens: any) => {
 
+    if (!_offerTokenAddress) return
+    if (!_buyerTokenAddress) return
+    if (!tokens) return
+    
     const _offerToken = tokens.filter((item: any) => item.tokenAddress === _offerTokenAddress)[0]
     const _buyerToken = tokens.filter((item: any) => item.tokenAddress === _buyerTokenAddress)[0]
 
@@ -233,4 +238,9 @@ export const getTokenSymbolsfromContract = async (_tokens: any, estokkYamContrac
         }
     }))
     return tokens
-} 
+}
+
+export const deleteOffer = async (offerId: any, estokkYamContract: any, account: any) => {
+    const result: any = await estokkYamContract.methods.deleteOffer(offerId).send({ from: account })
+    console.log("Result => ", result)
+}

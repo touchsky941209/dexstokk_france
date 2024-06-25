@@ -54,8 +54,6 @@ export const OfferContextProvide = ({ children }: { children: React.ReactNode })
     const value = useMemo(() => ({
         offerContents: offerContents
     }), [offerContents])
-
-
     return <OfferContext.Provider value={value}>{children}</OfferContext.Provider>;
 };
 

@@ -15,7 +15,6 @@ import {
     getRealEstakeTokens,
     getTokenSymbolsfromContract
 } from '../functions/tokensContract';
-import { ChainDisconnectedError } from 'viem';
 interface CreateOfferModalProps {
     isCreateOfferModalOpen: boolean;
     setIsCreateOfferModalOpen: (isOpen: boolean) => void;
@@ -55,8 +54,6 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
         setBuyTokenName("null")
         setSalePrice(0)
     };
-
-
 
     const CreateOffer = async () => {
         if (isPriceAvailable) {
@@ -179,7 +176,6 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                                             {String(tokenBalancesList[item.id])}
                                         </p>
                                     </div>
-
                                 </MenuItem>
                             ))
                         }
@@ -361,7 +357,6 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                 }
 
                 <div className="bg-[#00b3ba] w-[100%] h-[2px] "></div>
-
                 <p className="text-[15px] text-[#00b3ba] mt-3">Wallet balance</p>
                 <div className="flex items-center justify-start mt-1">
                     <img src="./img/billing.png" alt="billing" className="w-12" />
@@ -391,7 +386,6 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                 <p className="text-[#00b3ba] font-bold">
                     You wish to sell up to "{sellTokenName}" with unit price
                 </p>
-
                 {
                     isCheckedPrivate &&
                     <>
@@ -404,7 +398,6 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                         />
                     </>
                 }
-
                 <button
                     className="w-60 h-10 mt-3 border-[2px] border-[#00b3ba] text-[#00b3ba] hover:text-[white] hover:bg-[#00b3ba] duration-300 focus:outline-none rounded"
                     onClick={CreateOffer}
