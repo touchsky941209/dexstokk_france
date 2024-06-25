@@ -78,34 +78,17 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
         console.log("Offer Price => ", offerPrice)
         console.log("Offer Quantity => ", offerQuantity)
 
-        // try {
-        //     const result: any = await estokkYamContract.methods.createOffer(sellToken, buyerToken, buyer, offerPrice, offerQuantity).send({ from: account })
-        //     toastr.success("Offer is created Successfully!")
-        //     close()
-        // } catch (err) {
-        //     toastr.error("Create Offer Failed")
-        // }
+        try {
+            const result: any = await estokkYamContract.methods.createOffer(sellToken, buyerToken, buyer, offerPrice, offerQuantity).send({ from: account })
+            toastr.success("Offer is created Successfully!")
+            close()
+        } catch (err) {
+            toastr.error("Create Offer Failed")
+        }
     }
     useEffect(() => {
         setOfferType(props.createOfferTitle)
     }, [props, tokens, properties])
-
-    // useEffect(() => {
-    //     if (!tokens) return
-    //     const _getTokenBalance = async () => {
-    //         const _tokenId: number = Number(tokenId)
-    //         const _tokenAddress = getTokenAddress(_tokenId, tokens)
-    //         const _account = account
-    //         try {
-    //             const _balance = await getTokenBalance(_tokenAddress, _account)
-    //             setTokenBalance(_balance)
-    //         } catch (err) {
-    //             setTokenBalance(0)
-    //         }
-    //     }
-    //     _getTokenBalance()
-    // }, [tokenId])
-
 
     useEffect(() => {
         if (isCheckedPrivate === false)
