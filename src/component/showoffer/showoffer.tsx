@@ -22,7 +22,7 @@ const ShowOffer: React.FC = () => {
     const [address1, setAddress1] = useState<any>("")
     const [address2, setAddress2] = useState<any>("")
     const [srcImg, setSrcImg] = useState<any>("")
-    
+
     const Initialize = async () => {
         const offer = await estokkYamContract.methods.showOffer(offerId).call()
         const _offerToken = await estokkYamContract.methods.tokenInfo(offer[0]).call()
@@ -71,7 +71,6 @@ const ShowOffer: React.FC = () => {
             <p className="flex w-[80vw] bg-[#00dbe3] text-[white] text-[30px] items-center justify-center mt-20">
                 SELL
             </p>
-            {/* <img src='./img/offerbackground.png' alt="offerbackground" className="w-[80vw]" /> */}
             <img src={`./realEstakeImg/` + srcImg} alt="offerbackground" className="w-[80vw]" />
             <p className="flex w-[80vw] bg-[#173039] text-[white] text-[30px] items-center justify-center">
                 {address1}
