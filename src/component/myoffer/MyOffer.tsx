@@ -30,7 +30,6 @@ const columns: readonly Column[] = [
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
   },
-
   {
     id: 'buyertoken', label: 'Buyer\u00a0Token', minWidth: 80,
     align: 'center',
@@ -43,7 +42,6 @@ const columns: readonly Column[] = [
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US') + " %",
   },
-
   {
     id: 'offeryield',
     label: 'Offer Yield',
@@ -51,7 +49,6 @@ const columns: readonly Column[] = [
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US') + " %",
   },
-
   {
     id: 'yielddelta',
     label: 'Yield Delta',
@@ -147,6 +144,7 @@ export default function StickyHeadTable(props: any) {
     const offers = props.content
 
     offers.map((item: any, index: any) => {
+
       const _offerTokenAddres: any = item.offerTokenAddress
       const _buyerTokenAddres: any = item.buyerTokenAddress
       const _offerId: any = item.offerId
@@ -183,6 +181,7 @@ export default function StickyHeadTable(props: any) {
                   {column.label}
                 </TableCell>
               ))}
+              <p>pe</p>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -218,6 +217,6 @@ export default function StickyHeadTable(props: any) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    </Paper>
+    </Paper >
   );
 }

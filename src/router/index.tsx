@@ -5,7 +5,7 @@ import Footer from "../component/footer/footer"
 import ShowOffer from '../component/showoffer/showoffer';
 import Admin from "../component/adminpage";
 import History from "../component/history/index"
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { HashRouter, BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { OfferContextProvide } from "../contexts/offerContext";
 
 function ProjectRouter() {
@@ -18,7 +18,7 @@ function ProjectRouter() {
                 "backgroundSize": "cover"
             }}
         >
-            <Router>
+            <HashRouter>
                 <NavBar />
                 <OfferContextProvide>
                     <Routes>
@@ -29,9 +29,8 @@ function ProjectRouter() {
                         <Route path="/admin" element={<Admin />} />
                     </Routes>
                 </OfferContextProvide>
-
                 <Footer />
-            </Router>
+            </HashRouter>
         </div>
     )
 }

@@ -93,7 +93,6 @@ function Admin() {
 
     return (
         <div className="w-[80%] h-[700px] flex justify-between mt-5">
-
             <button
                 className="w-[200px] h-[50px] mr-1 ml-1 rounded text-[#00b3ba] border-[1px] border-[#00b3ba] focus:outline-none"
                 onClick={setAdmin}>
@@ -134,9 +133,10 @@ function Admin() {
             <button
                 className="w-[200px] h-[50px] mr-1 ml-1 rounded text-[#00b3ba] border-[1px] border-[#00b3ba] focus:outline-none"
                 onClick={async () => {
-                    const result: any = await estokkYamContract.methods.getTokenType("0x0f6b3cAfD5ab9bE37f8299284D7A30B93F3B76b7").call()
+                    const result: any = await estokkYamContract.methods.getTokenType("0xdac17f958d2ee523a2206206994597c13d831ec7").call()
                     console.log("Result => ", result)
-
+                    const tokeInfo = await estokkYamContract.methods.tokenInfo("0xdac17f958d2ee523a2206206994597c13d831ec7").call()
+                    console.log("Token Info =>", tokeInfo)
                 }}
             >
                 GetTokenType

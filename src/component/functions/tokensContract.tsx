@@ -60,9 +60,10 @@ export const getCurrencyTokenAddress = (tokenName: any) => {
 export const isAvailable = (_offerTokenAddress: any, _buyerTokenAddress: any, tokens: any, properties: any) => {
     if (!_offerTokenAddress) return false
     if (!_buyerTokenAddress) return false
-    if (!tokens.length) return false
-    if (!properties.length) return false
-
+    if (!tokens) return false
+    if (!properties) return false
+    if (tokens.length === 0) return false
+    if (properties.length === 0) return false
     return true
 }
 
@@ -142,16 +143,25 @@ export const getOfficialYield = (_offerTokenAddress: any, _buyerTokenAddress: an
     return annualGrossRent * 100 / totalInvestmentValue
 }
 
-export const getRealEstakeTokens = (tokens: any) => {
+export const getRealEstakeTokens = (_tokens: any) => {
 
-    if (!tokens) return
-    const realEstakeTokens = tokens.filter((item: any) => !(item.tokenSymbol.toLowerCase().includes("usdc") ||
+    if (!_tokens) return
+    const realEstakeTokens = _tokens.filter((item: any) => !(item.tokenSymbol.toLowerCase().includes("usdc") ||
         item.tokenSymbol.toLowerCase().includes("wdai"))
     )
     return realEstakeTokens
 }
 
 export const getCurrencyTokens = (tokens: any) => {
+
+    if (!tokens) return
+    const currencyTokens = tokens.filter((item: any) => item.tokenSymbol.toLowerCase().includes("usdc") ||
+        item.tokenSymbol.toLowerCase().includes("wdai")
+    )
+    return currencyTokens
+}
+
+export const getCurrencyTokensFromContract = async (tokens: any) => {
 
     if (!tokens) return
     const currencyTokens = tokens.filter((item: any) => item.tokenSymbol.toLowerCase().includes("usdc") ||
@@ -196,3 +206,33 @@ export const isSearchFilter = (_offerTokenAddress: any, _buyerTokenAddress: any,
         return true
     }
 }
+
+export const getTokenSymbolsfromContract = async (_tokens: any, estokkYamContract: any) => {
+
+    if (!_tokens) return
+    let noRepeatedTokens: any = []
+    _tokens.map((item: any, index: any) => {
+        const result = noRepeatedTokens.filter((itemCheck: any) => itemCheck === item.tokenAddress)[0]
+        if (!result)
+            noRepeatedTokens.push(item.tokenAddress)
+    })
+
+    let tokens: any = []
+
+    await Promise.all(noRepeatedTokens.map(async (item: any, index: any) => {
+
+        try {
+            const _tokenSymbol = await estokkYamContract.methods.tokenInfo(item).call()
+            if (_tokenSymbol) {
+                tokens.push({
+                    tokenAddress: item,
+                    tokenSymbol: _tokenSymbol[1]
+                })
+            }
+        } catch (err) {
+        }
+    }))
+
+    console.log("Tokens => ", tokens)
+    return tokens
+} 

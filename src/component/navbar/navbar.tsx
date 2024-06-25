@@ -59,12 +59,10 @@ const NavBar: React.FC = () => {
                     </ul>
                 </nav>
             </div>
-
             <div className="mt-8 hidden lg:block" id="ConnectWallet">
                 <WalletConnectBtn />
             </div>
         </header>
-
     )
 }
 

@@ -12,8 +12,10 @@ import {
     getCurrencyTokenAddress,
     defaultContractAddress,
     getCurrencyTokens,
-    getRealEstakeTokens
+    getRealEstakeTokens,
+    getTokenSymbolsfromContract
 } from '../functions/tokensContract';
+import { ChainDisconnectedError } from 'viem';
 interface CreateOfferModalProps {
     isCreateOfferModalOpen: boolean;
     setIsCreateOfferModalOpen: (isOpen: boolean) => void;
@@ -22,7 +24,7 @@ interface CreateOfferModalProps {
 }
 
 const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
-    const { estokkYamContract, account, tokens, properties } = useWeb3();
+    const { estokkYamContract, account, tokens, properties, chainId } = useWeb3();
     const [offerType, setOfferType] = useState<any>()
     const [sellToken, setSellToken] = useState<any>()
     const [buyerToken, setBuyerToken] = useState<any>()
@@ -77,6 +79,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
         console.log("Buyer => ", buyer)
         console.log("Offer Price => ", offerPrice)
         console.log("Offer Quantity => ", offerQuantity)
+
         try {
             const result: any = await estokkYamContract.methods.createOffer(sellToken, buyerToken, buyer, offerPrice, offerQuantity).send({ from: account })
             toastr.success("Offer is created Successfully!")
@@ -112,23 +115,17 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
     }, [isCheckedPrivate])
 
     useEffect(() => {
-        setRealEstakeTokens(getRealEstakeTokens(tokens))
-        setCurrencyTokens(getCurrencyTokens(tokens))
-
-    }, [tokens])
-
-
-    useEffect(() => {
         if (!realEstakeTokens) return
         let _tokenBalanceList: any = []
         realEstakeTokens.map((item: any, index: any) => {
             const _getTokenBalance = async () => {
-                const _tokenAddress = getTokenAddress(item.id, tokens)
+                const _tokenAddress = item.tokenAddress
                 const _account = account
                 let _balance: any = 0
                 try {
                     _balance = await getTokenBalance(_tokenAddress, _account)
-
+                    console.log("Item => ", item)
+                    console.log("Balance =>>>", _balance)
                 } catch (err) {
                     _balance = 0
                 }
@@ -138,6 +135,20 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
             _getTokenBalance()
         })
     }, [realEstakeTokens])
+
+    useEffect(() => {
+        const setInit = async () => {
+            const filteredTokens = await getTokenSymbolsfromContract(tokens, estokkYamContract)
+            setRealEstakeTokens(getRealEstakeTokens(filteredTokens))
+            setCurrencyTokens(getCurrencyTokens(filteredTokens))
+        }
+        setInit()
+    }, [tokens, chainId])
+
+    useEffect(() => {
+        console.log("RealToken =>", realEstakeTokens)
+        console.log("CurrencyToken =>", currencyTokens)
+    }, [realEstakeTokens, currencyTokens])
 
     return (
 
