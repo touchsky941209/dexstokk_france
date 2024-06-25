@@ -13,7 +13,6 @@ export const getTokenBalance = async (tokenAddress: any, account: any) => {
 
 export const getTokenAddress = (_tokenId: any, tokens: any) => {
     let _tokenAddress: string | undefined;
-
     tokens.map((item: any, index: any) => {
         if (item.id === _tokenId) {
             _tokenAddress = String(item.tokenAddress)
@@ -35,14 +34,13 @@ export const getTokenSymbol = (_tokenId: any, tokens: any) => {
     return _tokenSymbol
 }
 
-export const getTokenSalePrice = (_tokenId: any, tokens: any) => {
+export const getTokenSalePrice = (_tokenAddress: any, tokens: any) => {
     let _tokenSalePrice: any
     tokens.map((item: any, index: any) => {
-        if (item.id === _tokenId) {
+        if (item.tokenAddress === _tokenAddress) {
             _tokenSalePrice = item.salePrice
         }
     })
-    console.log("Token Sale Price =>>>", _tokenSalePrice)
     return _tokenSalePrice
 }
 
@@ -218,21 +216,21 @@ export const getTokenSymbolsfromContract = async (_tokens: any, estokkYamContrac
     })
 
     let tokens: any = []
-
+    let num: number = 0
     await Promise.all(noRepeatedTokens.map(async (item: any, index: any) => {
 
         try {
             const _tokenSymbol = await estokkYamContract.methods.tokenInfo(item).call()
             if (_tokenSymbol) {
                 tokens.push({
+                    id: num,
                     tokenAddress: item,
                     tokenSymbol: _tokenSymbol[1]
                 })
+                num++
             }
         } catch (err) {
         }
     }))
-
-    console.log("Tokens => ", tokens)
     return tokens
 } 

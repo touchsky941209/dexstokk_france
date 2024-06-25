@@ -31,7 +31,6 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
     const [offerPrice, setOfferPrice] = useState<any>()
     const [offerQuantity, setOfferQuantity] = useState<any>()
     const [offerPriceCurrency, setOfferPriceCurrency] = useState<any>()
-    const [tokenId, setTokenId] = useState<any>()
     const [priceDifference, setPriceDifference] = useState<any>()
     const [isPriceAvailable, setIsPriceAvailable] = useState<boolean>(false)
     const [tokenBalance, setTokenBalance] = useState<any>()
@@ -45,12 +44,11 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
     const [tokenBalancesList, setTokenBalancesList] = useState<any>([])
     const [selecTagOffer, setSelectTagOffer] = useState<any>()
     const [selecTagBuyer, setSelectTagBuyer] = useState<any>()
-
+    const [filtteredTokens, setFilteredTokens] = useState<any>()
     const close = () => {
         props.setCreateOffer('none');
         props.setIsCreateOfferModalOpen(false);
         setIsPriceAvailable(false)
-        setTokenId(-1)
         setOfferPrice(0)
         setOfferPriceCurrency(0)
         setSellTokenName("null")
@@ -80,33 +78,33 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
         console.log("Offer Price => ", offerPrice)
         console.log("Offer Quantity => ", offerQuantity)
 
-        try {
-            const result: any = await estokkYamContract.methods.createOffer(sellToken, buyerToken, buyer, offerPrice, offerQuantity).send({ from: account })
-            toastr.success("Offer is created Successfully!")
-            close()
-        } catch (err) {
-            toastr.error("Create Offer Failed")
-        }
+        // try {
+        //     const result: any = await estokkYamContract.methods.createOffer(sellToken, buyerToken, buyer, offerPrice, offerQuantity).send({ from: account })
+        //     toastr.success("Offer is created Successfully!")
+        //     close()
+        // } catch (err) {
+        //     toastr.error("Create Offer Failed")
+        // }
     }
     useEffect(() => {
         setOfferType(props.createOfferTitle)
     }, [props, tokens, properties])
 
-    useEffect(() => {
-        if (!tokens) return
-        const _getTokenBalance = async () => {
-            const _tokenId: number = Number(tokenId)
-            const _tokenAddress = getTokenAddress(_tokenId, tokens)
-            const _account = account
-            try {
-                const _balance = await getTokenBalance(_tokenAddress, _account)
-                setTokenBalance(_balance)
-            } catch (err) {
-                setTokenBalance(0)
-            }
-        }
-        _getTokenBalance()
-    }, [tokenId])
+    // useEffect(() => {
+    //     if (!tokens) return
+    //     const _getTokenBalance = async () => {
+    //         const _tokenId: number = Number(tokenId)
+    //         const _tokenAddress = getTokenAddress(_tokenId, tokens)
+    //         const _account = account
+    //         try {
+    //             const _balance = await getTokenBalance(_tokenAddress, _account)
+    //             setTokenBalance(_balance)
+    //         } catch (err) {
+    //             setTokenBalance(0)
+    //         }
+    //     }
+    //     _getTokenBalance()
+    // }, [tokenId])
 
 
     useEffect(() => {
@@ -117,15 +115,13 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
     useEffect(() => {
         if (!realEstakeTokens) return
         let _tokenBalanceList: any = []
-        realEstakeTokens.map((item: any, index: any) => {
+        filtteredTokens.map((item: any, index: any) => {
             const _getTokenBalance = async () => {
                 const _tokenAddress = item.tokenAddress
                 const _account = account
                 let _balance: any = 0
                 try {
                     _balance = await getTokenBalance(_tokenAddress, _account)
-                    console.log("Item => ", item)
-                    console.log("Balance =>>>", _balance)
                 } catch (err) {
                     _balance = 0
                 }
@@ -134,21 +130,18 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
             }
             _getTokenBalance()
         })
-    }, [realEstakeTokens])
+    }, [filtteredTokens, chainId])
+
 
     useEffect(() => {
         const setInit = async () => {
-            const filteredTokens = await getTokenSymbolsfromContract(tokens, estokkYamContract)
-            setRealEstakeTokens(getRealEstakeTokens(filteredTokens))
-            setCurrencyTokens(getCurrencyTokens(filteredTokens))
+            const _filteredTokens = await getTokenSymbolsfromContract(tokens, estokkYamContract)
+            setRealEstakeTokens(getRealEstakeTokens(_filteredTokens))
+            setCurrencyTokens(getCurrencyTokens(_filteredTokens))
+            setFilteredTokens(_filteredTokens)
         }
         setInit()
     }, [tokens, chainId])
-
-    useEffect(() => {
-        console.log("RealToken =>", realEstakeTokens)
-        console.log("CurrencyToken =>", currencyTokens)
-    }, [realEstakeTokens, currencyTokens])
 
     return (
 
@@ -173,20 +166,22 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                     <p>Offer Token</p>
                     <Select className="h-9 border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none"
                         value={selecTagOffer}
+                        defaultValue=""
                         onChange={(e) => {
                             const value = e.target.value
                             setSelectTagOffer(value as String)
-
+                            const _offerTokenAddress = getTokenAddress(value, filtteredTokens)
+                            const _offerTokenSymbol = getTokenSymbol(value, filtteredTokens)
                             if (value === "null") {
                                 setSellTokenName("")
                                 setSalePrice(0)
                                 return
                             }
-                            setTokenId(value)
-                            setSellTokenName(getTokenSymbol(value, tokens))
-                            setSellToken(getTokenAddress(value, tokens))
+                            setTokenBalance(tokenBalancesList[value])
+                            setSellTokenName(getTokenSymbol(value, filtteredTokens))
+                            setSellToken(_offerTokenAddress)
                             if (offerType === "sell") {
-                                setSalePrice(getTokenSalePrice(value, tokens))
+                                setSalePrice(getTokenSalePrice(_offerTokenAddress, tokens))
                             }
                         }}
                     >
@@ -198,7 +193,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                                             {String(item.tokenSymbol)}
                                         </p>
                                         <p>
-                                            {String(tokenBalancesList[index])}
+                                            {String(tokenBalancesList[item.id])}
                                         </p>
                                     </div>
 
@@ -207,7 +202,17 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                         }
                         {
                             offerType == "buy" && currencyTokens.length > 0 && currencyTokens.map((item: any, index: any) => (
-                                <MenuItem value={item.id}>{item.tokenSymbol}</MenuItem>
+                                <MenuItem value={item.id}>
+                                    <div className='flex w-[100%] justify-between'>
+                                        <p>
+                                            {String(item.tokenSymbol)}
+                                        </p>
+                                        <p>
+                                            {String(tokenBalancesList[item.id])}
+                                        </p>
+                                    </div>
+
+                                </MenuItem>
                             ))
                         }
                         {
@@ -218,7 +223,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                                             {String(item.tokenSymbol)}
                                         </p>
                                         <p>
-                                            {String(tokenBalancesList[index])}
+                                            {String(tokenBalancesList[item.id])}
                                         </p>
                                     </div>
 
@@ -232,20 +237,32 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                     <p>Buyer Token</p>
                     <Select className="h-9 border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none"
                         value={selecTagBuyer}
+                        defaultValue=""
                         onChange={(e) => {
                             const value = e.target.value
                             setSelectTagBuyer(value as String)
                             if (value == "null") return
-
-                            setBuyerToken(getTokenAddress(value, tokens))
-                            setBuyTokenName(getTokenSymbol(value, tokens))
-                            if (offerType === "buy")
-                                setSalePrice(getTokenSalePrice(value, tokens))
+                            const _buyerTokenAddress = getTokenAddress(value, filtteredTokens)
+                            setBuyerToken(_buyerTokenAddress)
+                            setBuyTokenName(getTokenSymbol(value, filtteredTokens))
+                            if (offerType === "buy") {
+                                setSalePrice(getTokenSalePrice(_buyerTokenAddress, tokens))
+                            }
                         }}
                     >
                         {
                             offerType == "sell" && currencyTokens.length > 0 && currencyTokens.map((item: any, index: any) => (
-                                <MenuItem value={item.id}>{item.tokenSymbol}</MenuItem>
+                                <MenuItem value={item.id}>
+                                    <div className='flex w-[100%] justify-between'>
+                                        <p>
+                                            {String(item.tokenSymbol)}
+                                        </p>
+                                        <p>
+                                            {String(tokenBalancesList[item.id])}
+                                        </p>
+                                    </div>
+
+                                </MenuItem>
                             ))
                         }
                         {
@@ -259,7 +276,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                                             {String(item.tokenSymbol)}
                                         </p>
                                         <p>
-                                            {String(tokenBalancesList[index])}
+                                            {String(tokenBalancesList[item.id])}
                                         </p>
                                     </div>
                                 </MenuItem>
@@ -277,7 +294,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                                             {String(item.tokenSymbol)}
                                         </p>
                                         <p>
-                                            {String(tokenBalancesList[index])}
+                                            {String(tokenBalancesList[item.id])}
                                         </p>
                                     </div>
                                 </MenuItem>
@@ -366,7 +383,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                 <div className="flex items-center justify-start mt-1">
                     <img src="./img/billing.png" alt="billing" className="w-12" />
                     <div className="ml-2">
-                        <p className="font-bold text-[13px]">{getTokenSymbol(tokenId, tokens)}</p>
+                        <p className="font-bold text-[13px]">{sellTokenName}</p>
                         <p className="text-[13px]">With USDC = {tokenBalance}</p>
                     </div>
                 </div>

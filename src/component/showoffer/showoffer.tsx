@@ -22,6 +22,7 @@ const ShowOffer: React.FC = () => {
     const [address1, setAddress1] = useState<any>("")
     const [address2, setAddress2] = useState<any>("")
     const [srcImg, setSrcImg] = useState<any>("")
+    
     const Initialize = async () => {
         const offer = await estokkYamContract.methods.showOffer(offerId).call()
         const _offerToken = await estokkYamContract.methods.tokenInfo(offer[0]).call()

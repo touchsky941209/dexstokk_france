@@ -19,6 +19,7 @@ export default function BasicSelect(props: any) {
             value={age}
             label="Age"
             onChange={handleChange}
+            defaultValue=""
         >
             <MenuItem value={10}>
                 <div className='flex bg-red-100 w-[100%] justify-between'>
