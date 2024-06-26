@@ -128,7 +128,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <div className="w-[100%] lg:w-[500px] lg:h-[780px] flex flex-col pt-3 pb-3 pr-3 pl-3">
+            <div className="w-[100%] lg:w-[500px] lg:h-[800px] auto-smooth flex flex-col pt-3 pb-3 pr-3 pl-3">
                 <div className="flex w-[100%] justify-between items-center">
                     <p className="flex items-center justify-center rounded-md bg-[red] w-32 h-8 text-[25px] text-[white]">
                         {offerType}
