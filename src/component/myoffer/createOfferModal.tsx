@@ -332,13 +332,13 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                 </div>
                 {
                     isPriceAvailable &&
-                    <p className="w-[50%] text-[red]  text-[12px]">
+                    <p className="w-[100%] text-[red]  text-[12px]">
                         Price difference is {priceDifference}% but limit fixed by shield is +5/-5('shied' on top right cover, for more informations)
                     </p>
                 }
                 {
                     offerType !== "exchange" ?
-                        <p className="w-[50%] text-[black] text-[15px] mt-3">
+                        <p className="w-[100%] text-[black] text-[15px] mt-3">
                             "The official property has been selled for {salePrice} $USD.
                             But you are free to choose the price."
                         </p> :
