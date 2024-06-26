@@ -91,7 +91,6 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
 
     useEffect(() => {
         if (!realEstakeTokens) return
-        console.log("Chain Id =>", chainId)
         let _tokenBalanceList: any = []
         filtteredTokens.map((item: any, index: any) => {
             const _getTokenBalance = async () => {
@@ -156,7 +155,6 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                                 return
                             }
                             setTokenBalance(tokenBalancesList[value])
-                            console.log("Offer Token  Name =>>", _offerTokenSymbol)
                             setSellTokenName(_offerTokenSymbol)
                             setSellToken(_offerTokenAddress)
                             if (offerType === "sell") {

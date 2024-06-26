@@ -154,7 +154,6 @@ export default function StickyHeadTable(props: any) {
       const offerArray: any = []
       const offerSellerAddress: any = []
       const offers = props.content
-      console.log("offers =>", offers)
       await Promise.all(
         offers.map(async (item: any, index: any) => {
 

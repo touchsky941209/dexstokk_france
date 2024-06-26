@@ -168,9 +168,9 @@ export default function StickyHeadTable(props: any) {
           const _yeidlDelta: any = (_offerYield - _officialYield) * 100 / _officialYield
           const _priceDelta: any = (_priceToken - _officialprice) / _officialprice
           const _availableQuantity: any = Number(item.amount) / Math.pow(10, 18)
-
           const offer = await estokkYamContract.methods.showOffer(_offerId).call()
-          if (item.seller === account || item.buyer === account) {
+
+          if (offer[2] === account) {
             if (isSearchFilter(_offerId, props.searchType, offers)) {
               offerArray.push(createData(_offerId, item.offerToken, item.buyerToken, _officialYield, _offerYield, _yeidlDelta, _officialprice, _priceToken, _priceDelta, _availableQuantity))
               offerSellerAddress.push(offer[2])

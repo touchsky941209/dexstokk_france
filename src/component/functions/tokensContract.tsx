@@ -25,9 +25,6 @@ export const getTokenAddress = (_tokenId: any, tokens: any) => {
 
 export const getTokenSymbol = (_tokenId: any, tokens: any) => {
     let tokenId: number = _tokenId
-    console.log("type of tokenID====>>>>", typeof tokenId)
-    console.log("tokenID====>>>>", tokenId)
-    console.log("Tokens ====>>>>", tokens)
 
     if (tokenId === undefined) return
     if (tokens === undefined) return
@@ -229,9 +226,7 @@ export const getTokenSymbolsfromContract = async (_tokens: any, estokkYamContrac
     await Promise.all(noRepeatedTokens.map(async (item: any, index: any) => {
 
         try {
-            console.log("Token => ", item)
             const _tokenSymbol = await estokkYamContract.methods.tokenInfo(item).call()
-            console.log("TokenSYmbl => ", _tokenSymbol)
             if (_tokenSymbol) {
                 tokens.push({
                     id: num,
@@ -248,5 +243,4 @@ export const getTokenSymbolsfromContract = async (_tokens: any, estokkYamContrac
 
 export const deleteOffer = async (offerId: any, estokkYamContract: any, account: any) => {
     const result: any = await estokkYamContract.methods.deleteOffer(offerId).send({ from: account })
-    console.log("Result => ", result)
 }
