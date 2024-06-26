@@ -48,6 +48,11 @@ function Admin() {
         console.log("Token Type =>", await estokkYamContract.methods.getTokenType(real_token).call())
     }
 
+    const getTokenInfo = async () => {
+        const result: any = await estokkYamContract.methods.tokenInfo("0x9c2312Cfd6200Ac9e399aBEF4f9045C5a7E41B7e").call()
+        console.log("Result =>", result)
+    }
+
     const getAdmin = async () => {
         console.log("admin", await estokkYamContract.methods.DEFAULT_ADMIN_ROLE().call());
 
@@ -147,6 +152,13 @@ function Admin() {
                 onClick={OfferDelete}
             >
                 Delete Offer
+            </button>
+
+            <button
+                className="w-[200px] h-[50px] mr-1 ml-1 rounded text-[#00b3ba] border-[1px] border-[#00b3ba] focus:outline-none"
+                onClick={getTokenInfo}
+            >
+                getTOkenInfo
             </button>
 
 

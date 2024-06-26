@@ -182,35 +182,33 @@ export const getTokenRealEstakeInfoFromMarketPlace = (_offerTokenAddress: any, _
     return RealEsakeToken
 }
 
-export const isSearchFilter = (_offerTokenAddress: any, _buyerTokenAddress: any, searchType: any, tokens: any) => {
+export const isSearchFilter = (_offerId: any, searchType: any, offers: any) => {
 
-    if (!_offerTokenAddress) return
-    if (!_buyerTokenAddress) return
-    if (!tokens) return
+    if (offers === undefined) return
+    if (_offerId === undefined) return
 
-    const _offerToken = tokens.filter((item: any) => item.tokenAddress === _offerTokenAddress)[0]
-    const _buyerToken = tokens.filter((item: any) => item.tokenAddress === _buyerTokenAddress)[0]
 
-    let realEstateToken: any
-    let currentToken: any
     if (searchType === "sell") {
-        if (_offerToken.tokenSymbol === "usdc_token" || _offerToken.tokenSymbol === "wdai_token")
+        const offer = offers.filter((item: any) => item.offerId === _offerId)[0]
+        if (offer.offerToken.toLowerCase() === "usdc_token" || offer.offerToken.toLowerCase() === "wdai_token")
             return false
-        if (_buyerToken.tokenSymbol !== "usdc_token" && _buyerToken.tokenSymbol !== "wdai_token")
-            return false
-
         return true
     }
 
-    if (searchType === "buy")
-        if (_offerToken.tokenSymbol === "usdc_token" || _offerToken.tokenSymbol === "wdai_token")
+    if (searchType === "buy") {
+        const offer = offers.filter((item: any) => item.offerId === _offerId)[0]
+        if (offer.offerToken.toLowerCase() === "usdc_token" || offer.offerToken.toLowerCase() === "wdai_token")
             return true
         else return false
+    }
 
     if (searchType === "exchange") {
-        if (_offerToken.tokenSymbol === "usdc_token" || _offerToken.tokenSymbol === "wdai_token") return false
-        if (_buyerToken.tokenSymbol === "usdc_token" || _buyerToken.tokenSymbol === "wdai_token") return false
+        const offer = offers.filter((item: any) => item.offerId === _offerId)[0]
+        if (offer.offerToken.toLowerCase() === "usdc_token" || offer.offerToken.toLowerCase() === "wdai_token")
+            return false
 
+        if (offer.buyerToken.toLowerCase() === "usdc_token" || offer.buyerToken.toLowerCase() === "wdai_token")
+            return false
         return true
     }
 }
@@ -225,12 +223,15 @@ export const getTokenSymbolsfromContract = async (_tokens: any, estokkYamContrac
             noRepeatedTokens.push(item.tokenAddress)
     })
 
+
     let tokens: any = []
     let num: number = 0
     await Promise.all(noRepeatedTokens.map(async (item: any, index: any) => {
 
         try {
+            console.log("Token => ", item)
             const _tokenSymbol = await estokkYamContract.methods.tokenInfo(item).call()
+            console.log("TokenSYmbl => ", _tokenSymbol)
             if (_tokenSymbol) {
                 tokens.push({
                     id: num,

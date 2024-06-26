@@ -154,7 +154,7 @@ export default function StickyHeadTable(props: any) {
       const offerArray: any = []
       const offerSellerAddress: any = []
       const offers = props.content
-
+      console.log("offers =>", offers)
       await Promise.all(
         offers.map(async (item: any, index: any) => {
 
@@ -171,7 +171,7 @@ export default function StickyHeadTable(props: any) {
 
           const offer = await estokkYamContract.methods.showOffer(_offerId).call()
 
-          if (isSearchFilter(_offerTokenAddres, _buyerTokenAddres, props.searchType, tokens)) {
+          if (isSearchFilter(_offerId, props.searchType, offers)) {
             offerArray.push(createData(_offerId, item.offerToken, item.buyerToken, _officialYield, _offerYield, _yeidlDelta, _officialprice, _priceToken, _priceDelta, _availableQuantity))
             offerSellerAddress.push(offer[2])
           }
@@ -281,7 +281,6 @@ export default function StickyHeadTable(props: any) {
                         >
                           <img src='./img/contractDelete.png' width="42" height="42" alt='contractEdit'></img>
                         </button>
-
                       </TableCell>
                     </TableRow>
                   );

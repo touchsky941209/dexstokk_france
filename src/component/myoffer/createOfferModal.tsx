@@ -56,10 +56,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
     };
 
     const CreateOffer = async () => {
-        // if (isPriceAvailable) {
-        //     toastr.error("Offer Content is not available!")
-        //     return
-        // }
+
         const _offerQuantity = Number(offerQuantity) / Math.pow(10, 18)
         if (_offerQuantity > tokenBalance) {
             toastr.info("Balance is not available.")
@@ -94,6 +91,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
 
     useEffect(() => {
         if (!realEstakeTokens) return
+        console.log("Chain Id =>", chainId)
         let _tokenBalanceList: any = []
         filtteredTokens.map((item: any, index: any) => {
             const _getTokenBalance = async () => {

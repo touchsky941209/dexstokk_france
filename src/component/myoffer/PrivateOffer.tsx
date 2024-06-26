@@ -172,7 +172,7 @@ export default function StickyHeadTable(props: any) {
           const offer = await estokkYamContract.methods.showOffer(_offerId).call()
 
           if (item.buyer === account) {
-            if (isSearchFilter(_offerTokenAddres, _buyerTokenAddres, props.searchType, tokens)) {
+            if (isSearchFilter(_offerId, props.searchType, offers)) {
               offerArray.push(createData(_offerId, item.offerToken, item.buyerToken, _officialYield, _offerYield, _yeidlDelta, _officialprice, _priceToken, _priceDelta, _availableQuantity))
               offerSellerAddress.push(offer[2])
             }
