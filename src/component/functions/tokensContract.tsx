@@ -24,11 +24,16 @@ export const getTokenAddress = (_tokenId: any, tokens: any) => {
 }
 
 export const getTokenSymbol = (_tokenId: any, tokens: any) => {
-    if (!_tokenId) return
-    if (!tokens) return
+    let tokenId: number = _tokenId
+    console.log("type of tokenID====>>>>", typeof tokenId)
+    console.log("tokenID====>>>>", tokenId)
+    console.log("Tokens ====>>>>", tokens)
+
+    if (tokenId === undefined) return
+    if (tokens === undefined) return
     let _tokenSymbol: any
     tokens.map((item: any, index: any) => {
-        if (item.id === _tokenId) {
+        if (Number(item.id) === Number(tokenId)) {
             _tokenSymbol = item.tokenSymbol
         }
     })
@@ -182,7 +187,7 @@ export const isSearchFilter = (_offerTokenAddress: any, _buyerTokenAddress: any,
     if (!_offerTokenAddress) return
     if (!_buyerTokenAddress) return
     if (!tokens) return
-    
+
     const _offerToken = tokens.filter((item: any) => item.tokenAddress === _offerTokenAddress)[0]
     const _buyerToken = tokens.filter((item: any) => item.tokenAddress === _buyerTokenAddress)[0]
 

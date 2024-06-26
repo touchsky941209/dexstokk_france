@@ -56,10 +56,10 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
     };
 
     const CreateOffer = async () => {
-        if (isPriceAvailable) {
-            toastr.error("Offer Content is not available!")
-            return
-        }
+        // if (isPriceAvailable) {
+        //     toastr.error("Offer Content is not available!")
+        //     return
+        // }
         const _offerQuantity = Number(offerQuantity) / Math.pow(10, 18)
         if (_offerQuantity > tokenBalance) {
             toastr.info("Balance is not available.")
@@ -158,7 +158,8 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                                 return
                             }
                             setTokenBalance(tokenBalancesList[value])
-                            setSellTokenName(getTokenSymbol(value, filtteredTokens))
+                            console.log("Offer Token  Name =>>", _offerTokenSymbol)
+                            setSellTokenName(_offerTokenSymbol)
                             setSellToken(_offerTokenAddress)
                             if (offerType === "sell") {
                                 setSalePrice(getTokenSalePrice(_offerTokenAddress, tokens))
