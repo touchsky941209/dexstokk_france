@@ -9,7 +9,12 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { useNavigate } from 'react-router-dom';
 import useWeb3 from '../../hooks/useWeb3';
-import { getOfficialYield, getOfficialPrice, isSearchFilter } from '../functions/tokensContract';
+import {
+  getOfficialYield,
+  getOfficialPrice,
+  isSearchFilter,
+  defaultContractAddress,
+} from '../functions/tokensContract';
 import toastr from 'toastr';
 import Dialog from '@mui/material/Dialog';
 
@@ -171,8 +176,11 @@ export default function StickyHeadTable(props: any) {
 
           const offer = await estokkYamContract.methods.showOffer(_offerId).call()
 
-          if (item.buyer === account) {
+          if (offer[2] === account) {
             if (isSearchFilter(_offerId, props.searchType, offers)) {
+              if (offer[3] === defaultContractAddress) {
+                return
+              }
               offerArray.push(createData(_offerId, item.offerToken, item.buyerToken, _officialYield, _offerYield, _yeidlDelta, _officialprice, _priceToken, _priceDelta, _availableQuantity))
               offerSellerAddress.push(offer[2])
             }
