@@ -242,6 +242,7 @@ export default function StickyHeadTable(props: any) {
       toastr.error("Offer update is failed")
     }
   }
+  
 
   return (
     <>
