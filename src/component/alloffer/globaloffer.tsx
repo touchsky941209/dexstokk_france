@@ -216,7 +216,9 @@ export default function StickyHeadTable(props: any) {
         return
       }
       await estokkYamContract.methods.deleteOffer(offerId).send({ from: account })
+      toastr.success("Offer is deleted.")
     } catch (err) {
+      toastr.error("Offer delete is failed.")
     }
   }
 
@@ -224,6 +226,7 @@ export default function StickyHeadTable(props: any) {
     try {
       const result = await estokkYamContract.methods.updateOffer(updateOfferId, updateOfferPrice, updateOfferAmount).send({ from: account })
       toastr.success("Offer is updated successfully")
+      setDialogOpen(false)
     } catch (err) {
       toastr.error("Offer update is failed")
     }
