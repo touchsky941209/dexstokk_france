@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import useWeb3 from "../../hooks/useWeb3"
 import api from "../../service/axios"
+import { getTokeInfoFromTokenContract } from "../functions/tokensContract"
 function Admin() {
     const { estokkYamContract, account, chainId } = useWeb3()
     // const real_token: any = "0x0170A96Cac4dd1D3dE9FB7fB19A6C10D43e663D3"
@@ -49,7 +50,13 @@ function Admin() {
     }
 
     const getTokenInfo = async () => {
-        const result: any = await estokkYamContract.methods.tokenInfo("0x9c2312Cfd6200Ac9e399aBEF4f9045C5a7E41B7e").call()
+        // const result: any = await estokkYamContract.methods.tokenInfo("0x0170A96Cac4dd1D3dE9FB7fB19A6C10D43e663D3").call()
+        const result: any = await estokkYamContract.methods.tokenInfo("0xdac17f958d2ee523a2206206994597c13d831ec7").call()
+        console.log("Result =>", result)
+    }
+
+    const getTokenInfoFromGlobal = async () => {
+        const result: any = await getTokeInfoFromTokenContract("0xdac17f958d2ee523a2206206994597c13d831ec7", account)
         console.log("Result =>", result)
     }
 
@@ -156,9 +163,9 @@ function Admin() {
 
             <button
                 className="w-[200px] h-[50px] mr-1 ml-1 rounded text-[#00b3ba] border-[1px] border-[#00b3ba] focus:outline-none"
-                onClick={getTokenInfo}
+                onClick={getTokenInfoFromGlobal}
             >
-                getTOkenInfo
+                getTokenInfo
             </button>
 
 

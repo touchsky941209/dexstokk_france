@@ -12,7 +12,7 @@ import { useAccount, useChainId } from 'wagmi';
 import { useEthersProvider, useEthersSigner } from '../utils/wagmi-ethers';
 import { Web3ContextType } from '../types';
 import EstokkYamContractAbi from '../contract/EstokkYam.json';
-import { estokkYamContractAddress_Sepolia } from '../constant';
+import { estokkYamContractAddress_Gnosis, estokkYamContractAddress_Sepolia } from '../constant';
 import { estokkYamContractAddress_Chiado } from '../constant';
 import api from "../service/axios"
 
@@ -51,6 +51,11 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
                 _estokkYamContract = new web3.eth.Contract(
                     EstokkYamContractAbi,
                     estokkYamContractAddress_Sepolia
+                );
+            } else if (chainId === 100) {
+                _estokkYamContract = new web3.eth.Contract(
+                    EstokkYamContractAbi,
+                    estokkYamContractAddress_Gnosis
                 );
             }
 

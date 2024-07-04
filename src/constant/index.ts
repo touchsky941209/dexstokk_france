@@ -1,2 +1,3 @@
 export const estokkYamContractAddress_Sepolia = '0xb8c08a9f7a4efcd4b3a460b8b45236d1a86d1b64';
 export const estokkYamContractAddress_Chiado = '0x0f6b3cAfD5ab9bE37f8299284D7A30B93F3B76b7';
+export const estokkYamContractAddress_Gnosis = '0x6BD1a0E97D87706506f0fCcCF6588A71DC3CfCCA';

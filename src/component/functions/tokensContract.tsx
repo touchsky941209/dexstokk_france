@@ -12,6 +12,14 @@ export const getTokenBalance = async (tokenAddress: any, account: any) => {
     return Number(balance) / Math.pow(10, 18);
 }
 
+export const getTokeInfoFromTokenContract = async (tokenAddress: any, account: any) => {
+    const web3 = new Web3(window.ethereum);
+    const tokenContract = new web3.eth.Contract(TokenContractAbi, tokenAddress);
+    const symbol = await tokenContract.methods.symbol(account).call();
+    return symbol;
+
+}
+
 export const getTokenAddress = (_tokenId: any, tokens: any) => {
     let _tokenAddress: string | undefined;
     tokens.map((item: any, index: any) => {
