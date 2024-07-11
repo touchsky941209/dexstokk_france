@@ -16,6 +16,9 @@ function Admin() {
     const wdai_token: any = "0x4069F86aDd448c60546A5363Da9215690086F8c3"
 
 
+    const XDAI: any = "0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d"
+    const USDT: any = "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+
 
     const setAdmin = async () => {
         try {
@@ -56,7 +59,7 @@ function Admin() {
     }
 
     const getTokenInfoFromGlobal = async () => {
-        const result: any = await getTokeInfoFromTokenContract("0xdac17f958d2ee523a2206206994597c13d831ec7", account)
+        const result: any = await getTokeInfoFromTokenContract(XDAI, account)
         console.log("Result =>", result)
     }
 

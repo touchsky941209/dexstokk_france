@@ -3,7 +3,8 @@ import TokenContractAbi from '../../contract/Token.json'
 import { convertToObject } from 'typescript';
 
 export const defaultContractAddress = "0x0000000000000000000000000000000000000000"
-
+const _usdt_tokenSymbol = "usdt"
+const _wxdai_tokenSymbol = "wxdai"
 
 export const getTokenBalance = async (tokenAddress: any, account: any) => {
     const web3 = new Web3(window.ethereum);
@@ -62,8 +63,8 @@ export const getCurrencyTokenAddress = (tokenName: any) => {
     const usdc_token: any = "0x25F460F2E84608EE83E93b7E36985a37D241fD1F"
     const wdai_token: any = "0x0f6b3cAfD5ab9bE37f8299284D7A30B93F3B76b7"
 
-    if (tokenName === "usdc") return usdc_token
-    if (tokenName === "wdai") return wdai_token
+    if (tokenName === _usdt_tokenSymbol) return usdc_token
+    if (tokenName === _wxdai_tokenSymbol) return wdai_token
 }
 
 export const isAvailable = (_offerTokenAddress: any, _buyerTokenAddress: any, tokens: any, properties: any) => {
@@ -83,11 +84,11 @@ export const getPropertyId = (_offerTokenAddress: any, _buyerTokenAddress: any, 
     const _buyerToken = tokens.filter((item: any) => item.tokenAddress === _buyerTokenAddress)[0]
     let realEstateToken: any
     let currentToken: any
-    if (_offerToken.tokenSymbol === "usdc_token" || _offerToken.tokenSymbol === "wdai_token") {
+    if (_offerToken.tokenSymbol === _usdt_tokenSymbol || _offerToken.tokenSymbol === _wxdai_tokenSymbol) {
         realEstateToken = _buyerToken
         currentToken = _offerToken
     }
-    else if (_buyerToken.tokenSymbol === "usdc_token" || _buyerToken.tokenSymbol === "wdai_token") {
+    else if (_buyerToken.tokenSymbol === _usdt_tokenSymbol || _buyerToken.tokenSymbol === _wxdai_tokenSymbol) {
         realEstateToken = _offerToken
         currentToken = _buyerToken
     }
@@ -107,12 +108,12 @@ export const getOfficialPrice = (_offerTokenAddress: any, _buyerTokenAddress: an
     const _buyerToken = tokens.filter((item: any) => item.tokenAddress === _buyerTokenAddress)[0]
     let realEstateToken: any
     let currentToken: any
-    if (_offerToken.tokenSymbol === "usdc_token" || _offerToken.tokenSymbol === "wdai_token") {
+    if (_offerToken.tokenSymbol === _usdt_tokenSymbol || _offerToken.tokenSymbol === _wxdai_tokenSymbol) {
         realEstateToken = _buyerToken
         currentToken = _offerToken
     }
 
-    else if (_buyerToken.tokenSymbol === "usdc_token" || _buyerToken.tokenSymbol === "wdai_token") {
+    else if (_buyerToken.tokenSymbol === _usdt_tokenSymbol || _buyerToken.tokenSymbol === _wxdai_tokenSymbol) {
         realEstateToken = _offerToken
         currentToken = _buyerToken
     }
@@ -155,8 +156,8 @@ export const getOfficialYield = (_offerTokenAddress: any, _buyerTokenAddress: an
 export const getRealEstakeTokens = (_tokens: any) => {
 
     if (!_tokens) return
-    const realEstakeTokens = _tokens.filter((item: any) => !(item.tokenSymbol.toLowerCase().includes("usdc") ||
-        item.tokenSymbol.toLowerCase().includes("wdai"))
+    const realEstakeTokens = _tokens.filter((item: any) => !(item.tokenSymbol.toLowerCase().includes(_usdt_tokenSymbol) ||
+        item.tokenSymbol.toLowerCase().includes(_wxdai_tokenSymbol))
     )
     return realEstakeTokens
 }
@@ -164,8 +165,8 @@ export const getRealEstakeTokens = (_tokens: any) => {
 export const getCurrencyTokens = (tokens: any) => {
 
     if (!tokens) return
-    const currencyTokens = tokens.filter((item: any) => item.tokenSymbol.toLowerCase().includes("usdc") ||
-        item.tokenSymbol.toLowerCase().includes("wdai")
+    const currencyTokens = tokens.filter((item: any) => item.tokenSymbol.toLowerCase().includes(_usdt_tokenSymbol) ||
+        item.tokenSymbol.toLowerCase().includes(_wxdai_tokenSymbol)
     )
     return currencyTokens
 }
@@ -173,8 +174,8 @@ export const getCurrencyTokens = (tokens: any) => {
 export const getCurrencyTokensFromContract = async (tokens: any) => {
 
     if (!tokens) return
-    const currencyTokens = tokens.filter((item: any) => item.tokenSymbol.toLowerCase().includes("usdc") ||
-        item.tokenSymbol.toLowerCase().includes("wdai")
+    const currencyTokens = tokens.filter((item: any) => item.tokenSymbol.toLowerCase().includes(_usdt_tokenSymbol) ||
+        item.tokenSymbol.toLowerCase().includes(_wxdai_tokenSymbol)
     )
     return currencyTokens
 }
@@ -195,24 +196,24 @@ export const isSearchFilter = (_offerId: any, searchType: any, offers: any) => {
 
     if (searchType === "sell") {
         const offer = offers.filter((item: any) => item.offerId === _offerId)[0]
-        if (offer.offerToken.toLowerCase() === "usdc_token" || offer.offerToken.toLowerCase() === "wdai_token")
+        if (offer.offerToken.toLowerCase() === _usdt_tokenSymbol || offer.offerToken.toLowerCase() === _wxdai_tokenSymbol)
             return false
         return true
     }
 
     if (searchType === "buy") {
         const offer = offers.filter((item: any) => item.offerId === _offerId)[0]
-        if (offer.offerToken.toLowerCase() === "usdc_token" || offer.offerToken.toLowerCase() === "wdai_token")
+        if (offer.offerToken.toLowerCase() === _usdt_tokenSymbol || offer.offerToken.toLowerCase() === _wxdai_tokenSymbol)
             return true
         else return false
     }
 
     if (searchType === "exchange") {
         const offer = offers.filter((item: any) => item.offerId === _offerId)[0]
-        if (offer.offerToken.toLowerCase() === "usdc_token" || offer.offerToken.toLowerCase() === "wdai_token")
+        if (offer.offerToken.toLowerCase() === _usdt_tokenSymbol || offer.offerToken.toLowerCase() === _wxdai_tokenSymbol)
             return false
 
-        if (offer.buyerToken.toLowerCase() === "usdc_token" || offer.buyerToken.toLowerCase() === "wdai_token")
+        if (offer.buyerToken.toLowerCase() === _usdt_tokenSymbol || offer.buyerToken.toLowerCase() === _wxdai_tokenSymbol)
             return false
         return true
     }
